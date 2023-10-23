@@ -11,7 +11,8 @@ import sv_ttk
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 exchange_data_stored = "TESTING"
-def get_specific_exchange_data(key='652dddec7e2b86.29923297', exchange = 'NYSE'):
+exchange_data_formatted_stored = None
+def get_specific_exchange_data(Home_treeview, key='652dddec7e2b86.29923297', exchange = 'NYSE'):
     """
     just get details of specific exchange items
     """
@@ -24,9 +25,14 @@ def get_specific_exchange_data(key='652dddec7e2b86.29923297', exchange = 'NYSE')
     global exchange_data_stored
     exchange_data_stored = call
     exchange_data = pd.DataFrame(json.loads(call))
-    print(exchange_data)
+    global exchange_data_formatted_stored
 
-
+    exchange_data_formatted_stored = exchange_data
+    print(exchange_data.keys())
+    print(exchange_data["Code"])
+    print(exchange_data.size/7)
+    for i in range(0,int(exchange_data.size/7)):
+        Home_treeview.insert("",'end',values=(exchange_data["Code"][i],exchange_data["Name"][i],exchange_data["Country"][i],exchange_data["Exchange"][i],exchange_data["Currency"][i],exchange_data["Type"][i],exchange_data["Isin"][i]))
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -90,7 +96,7 @@ if __name__ == '__main__':
         Watch_list_btn.bind("<Leave>", on_leave)
         Watch_list_btn.grid(row=1,column=0,sticky="nsew")
 
-        Settings = tk.Button(toggle_menu, text="Settings",font=('Bold'),bg='#2c2e30',fg='white',bd=0,activebackground='#2c2e30',command=get_specific_exchange_data)
+        Settings = tk.Button(toggle_menu, text="Settings",font=('Bold'),bg='#2c2e30',fg='white',bd=0,activebackground='#2c2e30')
         Settings.bind("<Enter>", on_enter)
         Settings.bind("<Leave>", on_leave)
         Settings.grid(row=2,column=0,sticky="nsew")
@@ -106,9 +112,15 @@ if __name__ == '__main__':
     Menu_Label = tk.Label(top_frame,text="MENU",font=('Bold'),bg='#2c2e30',fg='white')
     Menu_Label.pack(side=tk.LEFT)
 
-    Home_treeview = ttk.Treeview(root)
-    Home_treeview['columns'] = ("Name","Country","Exchange","Currency","Type","Current Price")
-    Home_treeview.column("#0",minwidth=10, width=100)
+    Tree_Frame = tk.Frame(root)
+    Tree_Frame.columnconfigure(0, weight = 1)
+    Tree_Frame.rowconfigure(0,weight=1)
+    Tree_Frame.pack(fill=tk.BOTH,expand=1)
+
+    Home_treeview = ttk.Treeview(Tree_Frame)
+    Home_treeview['columns'] = ("Code","Name","Country","Exchange","Currency","Type","Current Price")
+    Home_treeview.column("#0",width=0,stretch = "no")
+    Home_treeview.column("Code", minwidth=10, width=100)
     Home_treeview.column("Name",minwidth=10, width=100)
     Home_treeview.column("Country",minwidth=10, width=100)
     Home_treeview.column("Exchange",minwidth=10, width=100)
@@ -116,7 +128,7 @@ if __name__ == '__main__':
     Home_treeview.column("Type",minwidth=10, width=100)
     Home_treeview.column("Current Price",minwidth=10, width=100)
 
-    Home_treeview.heading("#0",text="Label")
+    Home_treeview.heading("Code",text="Code")
     Home_treeview.heading("Name", text="Name")
     Home_treeview.heading("Country", text="Country")
     Home_treeview.heading("Exchange", text="Exchange")
@@ -125,6 +137,15 @@ if __name__ == '__main__':
     Home_treeview.heading("Current Price", text="Current Price")
 
     Home_treeview.columnconfigure(0, weight = 1)
-    Home_treeview.pack(fill=tk.X)
+    Home_treeview.rowconfigure(0,weight=1)
+    Home_treeview.grid(row=0,column=0,sticky="nesw")
+
+
+
+
+
+    print("FRAME_HEIGHT" + str(Tree_Frame.winfo_height()))
+
+    get_specific_exchange_data(Home_treeview)
 
     root.mainloop()
