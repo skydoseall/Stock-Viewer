@@ -117,7 +117,7 @@ if __name__ == '__main__':
     Tree_Frame.rowconfigure(0,weight=1)
     Tree_Frame.pack(fill=tk.BOTH,expand=1)
 
-    Home_treeview = ttk.Treeview(Tree_Frame)
+    Home_treeview = ttk.Treeview(Tree_Frame,selectmode='browse')
     Home_treeview['columns'] = ("Code","Name","Country","Exchange","Currency","Type","Current Price")
     Home_treeview.column("#0",width=0,stretch = "no")
     Home_treeview.column("Code", minwidth=10, width=100)
@@ -138,13 +138,16 @@ if __name__ == '__main__':
 
     Home_treeview.columnconfigure(0, weight = 1)
     Home_treeview.rowconfigure(0,weight=1)
-    Home_treeview.grid(row=0,column=0,sticky="nesw")
+    Home_treeview.grid(row=0,column=0,sticky="nswe")
+
+    vsb = ttk.Scrollbar(Tree_Frame, command=Home_treeview.yview)
+    vsb.grid(row=0,column=1,sticky="ns")
 
 
-
-
-
-    print("FRAME_HEIGHT" + str(Tree_Frame.winfo_height()))
+    search_btn = tk.Button(top_frame,text='⌕',font=('Bold'), bg='#2c2e30',bd=0,activebackground='#2c2e30')
+    search_box = tk.Text(top_frame,width=30,height=20,wrap='none')
+    search_btn.pack(side=tk.RIGHT,pady=10)
+    search_box.pack(side=tk.RIGHT,pady=13)
 
     get_specific_exchange_data(Home_treeview)
 
